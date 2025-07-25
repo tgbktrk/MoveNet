@@ -180,6 +180,8 @@ if __name__ == '__main__':
 				interpreter.set_tensor(input_details[0]['index'], input_image.numpy())
 				interpreter.invoke()
 				keypoints = np.squeeze(interpreter.get_tensor(output_details[0]['index']))
+
+				draw_img = disp_arr.copy()
 				
 				# Depth estimation parameters
 				baseline = 0.1		# Distance between cameras in meters
@@ -204,13 +206,13 @@ if __name__ == '__main__':
 							X = (x - cx) * z / focal_length
 							Y = (y - cy) * z / focal_length
 							label = f"x:{X:.2f}m, y:{Y:.2f}m, z:{z:.2f}m"
-							cv2.circle(frame_rgb, (x, y), 4, (0, 255, 0), -1)
-							cv2.putText(frame_rgb, label, (x + 5, y - 10),
+							cv2.circle(draw_img, (x, y), 4, (0, 255, 0), -1)
+							cv2.putText(draw_img, label, (x + 5, y - 10),
 							        cv2.FONT_HERSHEY_SIMPLEX, 0.35, (255, 255, 255), 1)
 				
 				# Draw skeleton on frame
-				draw_connections(frame_rgb, keypoints, EDGES, 0.4)
-				draw_keypoints(frame_rgb, keypoints, 0.4)
+				draw_connections(draw_img, keypoints, EDGES, 0.4)
+				draw_keypoints(draw_img, keypoints, 0.4)
 				
 				# Resize outputs for display
 				disp_show = cv2.resize(disp_arr, (640, 360))
